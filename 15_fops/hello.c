@@ -7,7 +7,7 @@
 
 
 int base_minor = 0;
-char *device_name = "mychardev";
+char *device_name = "mydevice";
 int count = 1;
 dev_t devicenumber;
 
