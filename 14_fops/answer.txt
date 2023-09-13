@@ -1,0 +1,3 @@
+The open and release function is only called once.
+
+When you do fork(), it will not create a new file structure and close() will call the release method of the driver only when the counter of the file structure becomes zero

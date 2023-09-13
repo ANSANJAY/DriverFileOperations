@@ -1,0 +1,50 @@
+container_of macro is the macro you see almost in most of driver code. Search of "container_of" macro in drivers folder of Linux Source code gave more than 10 k results.
+
+What is the use of container_of macro?
+===========================================
+Given a structure having many members. The container_of macro will give the address of the structure when you pass the address of one of the member variable of that structure.
+
+Definition:
+========================
+container_of macro is defined in linux/kernel.h.
+
+/**
+ * container_of - cast a member of a structure out to the containing structure
+ * @ptr:    the pointer to the member.
+ * @type:   the type of the container struct this is embedded in.
+ * @member: the name of the member within the struct.
+ *
+ */
+#define container_of(ptr, type, member) ({          \
+    const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+    (type *)( (char *)__mptr - offsetof(type,member) );})
+
+({ void *__mptr = (void *)(ptr);
+((type *)(__mptr - offsetof(type, member))); })
+To understand these two lines of the macro, we need to get familiar with the following concepts.
+
+typeof()
+offsetof()
+Compound Statements
+
+1. typeof(): It is a very useful operator helpful to find out the type of the argument at run time. Using typeof we can write a simple macro which can work for multiple types. For example the swap function defined in kernel.h
+
+
+/*
+ * swap - swap value of @a and @b
+ */
+#define swap(a, b) \
+    do { typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while (0)
+
+2. offsetof(type, member): The offsetof() returns the offset of the field member from the start of structure type
+
+This is useful as the size of the members of the structure can differ across different architectures (x86, x86_64) and sometimes compiler also adds some padding for performance.
+
+
+3. Compound Statements:
+  
+Compound statements is a sequence of statements surrounded by braces. Parentheses also go around these braces.
+
+The last line in the compound statement should be an expression followed by a semicolon. The value of the expression serves as the value of the compound statement.
+container_of is also a compound statement, the value of ((type *)(__mptr - offsetof(type, member))); will be the return value of macro.
+

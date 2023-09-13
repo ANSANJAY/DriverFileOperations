@@ -1,0 +1,1 @@
+How many times device driver open and release will be called in case of fork?

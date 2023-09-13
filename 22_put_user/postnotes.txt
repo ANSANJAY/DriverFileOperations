@@ -1,0 +1,4 @@
+1. You can see from the output, the difference we got is 250, it means the value of jiffie increments by 250 every second, this also means the timer is configured to generate 250 interrupts every second.
+2. We use put_user to copy the value of jiffies to user space. put_user is faster than copy_to_user, and can copy up to 8 bytes of data. The size that put_user copies depends on the type of the pointer argument and is determined at compiled time using typeof and sizeof builtins.
+
+

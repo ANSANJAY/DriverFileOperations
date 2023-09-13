@@ -1,0 +1,18 @@
+copy_from_user
+================
+
+unsigned long copy_from_user(void *to, const void __user *from, unsigned long n)
+
+Header File: <linux/uaccess.h>
+
+The copy_from_user function copies a block of data from user space into a kernel buffer. 
+
+It accepts
+
+	destination buffer (in kernel space), 
+	a source buffer (from user space), and 
+	a length defined in bytes
+
+Returns: zero on success, non-zero to indicate a failure to copy some number of bytes.
+
+

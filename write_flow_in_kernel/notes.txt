@@ -1,0 +1,37 @@
+Let's see what happens when a user-space application calls write on a device file, for example in our previous program we wrote our own null device: /dev/my_null
+
+So, we execute write using: echo "Hello" > /dev/my_null
+
+Userspace internally calls GLibC write call which calls write System Call.
+
+Step1: Write system call in kernel is executed which is present in fs/read_write.c, which calls ksys_write
+
+Step2:  The fd passed by user is an index in the file descriptor table present in the kernel, fdget_pos fetches the struct fd of the particular file
+
+struct fd {
+    struct file *file;
+    unsigned int flags;
+};
+
+static inline loff_t file_pos_read(struct file *file)
+{
+    return file->f_pos;
+}
+
+This position extracts the offset within the file, and calls vfs_write, and then the return value of write call is updated with offset
+
+
+Step 3: In vfs_write,
+
+	It checks whether the file was opened in read-only mode
+	Checks whether this file has write method
+	Whether the passed user buffer is a valid buffer for reading
+	Verifies the area for writing is valid and for security permissions
+	And calls __vfs_write 
+
+Step 4: Finally in __vfs_write, it calls our write function present in the fops (struct file_operations) present in the struct file.
+
+So, this is the way, even if we pass only three arguments from user space, kernel reads the offset from the file and pass it to our write function defined in our driver.
+
+
+

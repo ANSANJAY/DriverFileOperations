@@ -1,0 +1,9 @@
+put_user function is used to write a simple variable from the kernel into user space
+
+put_user (x, ptr);
+
+x 	-->	Value to copy to user space. 
+ptr	-->	Destination address, in user space.
+
+It supports simple types like char and int, but not larger data types like structures or arrays.
+

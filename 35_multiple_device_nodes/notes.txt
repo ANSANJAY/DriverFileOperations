@@ -1,0 +1,7 @@
+In our previous program, we created a single device, let's modify the code to create multiple device nodes for example: 5 device nodes 
+
+While allocating the device numbers, we need to specify the number of minor devices in the count argument:
+
+int alloc_chrdev_region (dev_t *   dev,  unsigned  baseminor, unsigned  count, const char * name);
+
+We need to create an array of struct cdev, and register each of the cdev with one minor number.
