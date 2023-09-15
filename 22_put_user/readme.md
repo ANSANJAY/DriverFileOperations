@@ -1,3 +1,95 @@
+
+# Jiffies Character Device
+
+This project demonstrates how to create a Linux kernel module that represents a character device. This device, when read from, will provide the value of the `jiffies` variable. `jiffies` is a global kernel variable that indicates the number of clock ticks since system boot.
+
+## Structure
+
+The project is divided into two main parts:
+
+1. **Kernel Space:** The kernel module code which creates the character device.
+2. **User Space:** A simple C program to interact with the created character device.
+
+### Kernel Space
+
+The kernel module performs the following key actions:
+
+1. **Initialization and Cleanup:** Two functions (`test_hello_init` and `test_hello_exit`) are defined to handle the initialization and cleanup when the module is loaded and unloaded, respectively.
+2. **Device Operations:** Callback functions (e.g., `device_open`, `device_read`, `device_write`, `device_release`) are defined to handle operations performed on the character device.
+3. **Device Registration:** The module allocates a device number, initializes the character device structure, and registers it with the kernel.
+
+### User Space
+
+The user-space program performs the following actions:
+
+1. Opens the character device.
+2. Reads the `jiffies` value twice, with a sleep interval of one second between the readings.
+3. Computes and prints the difference between the two `jiffies` readings.
+
+## Compilation and Execution
+
+**Kernel Space:**
+
+To compile the kernel module:
+
+```bash
+$ make
+```
+
+Load the module:
+
+```bash
+$ sudo insmod <module_name>.ko
+```
+
+Check for any printed messages:
+
+```bash
+$ dmesg
+```
+
+To remove the module:
+
+```bash
+$ sudo rmmod <module_name>
+```
+
+**User Space:**
+
+Compile:
+
+```bash
+$ gcc user_program.c -o user_program
+```
+
+Run:
+
+```bash
+$ ./user_program
+```
+
+## Details
+
+### jiffies
+
+Informally, a "jiffy" is a term for any short period of time. In the Linux kernel, `jiffies` represents the number of clock ticks since system boot. It's a global variable provided by the kernel and is used frequently for timing operations.
+
+### Character Device
+
+Character devices are one of the ways to interface with the kernel. They are simple to write and can be accessed as regular files. In this project, the character device `/dev/jiffies` is created, and it supports basic file operations like open, read, write, and close.
+
+When a user reads from this device, the value of `jiffies` is returned. When written to, the device doesn't perform any specific operation.
+
+### Safety and User-Kernel Interactions
+
+The kernel space and user space in Linux are distinct, with the kernel having access to system memory and hardware, while user space interacts with the kernel through system calls.
+
+In this project, `put_user` is used to safely copy the value of `jiffies` from kernel space to user space. This function ensures that the kernel doesn't inadvertently overwrite user space memory.
+
+## Conclusion
+
+This project provides a practical example of kernel module programming and user-kernel interactions in Linux. It emphasizes the creation and use of character devices and safe memory operations between kernel and user spaces.
+
 Detailed Notes for Interview Revision:
 ==============
 put_user in Linux Kernel
@@ -112,94 +204,3 @@ Difference:1000
 ```
 
 ----
-
-# Jiffies Character Device
-
-This project demonstrates how to create a Linux kernel module that represents a character device. This device, when read from, will provide the value of the `jiffies` variable. `jiffies` is a global kernel variable that indicates the number of clock ticks since system boot.
-
-## Structure
-
-The project is divided into two main parts:
-
-1. **Kernel Space:** The kernel module code which creates the character device.
-2. **User Space:** A simple C program to interact with the created character device.
-
-### Kernel Space
-
-The kernel module performs the following key actions:
-
-1. **Initialization and Cleanup:** Two functions (`test_hello_init` and `test_hello_exit`) are defined to handle the initialization and cleanup when the module is loaded and unloaded, respectively.
-2. **Device Operations:** Callback functions (e.g., `device_open`, `device_read`, `device_write`, `device_release`) are defined to handle operations performed on the character device.
-3. **Device Registration:** The module allocates a device number, initializes the character device structure, and registers it with the kernel.
-
-### User Space
-
-The user-space program performs the following actions:
-
-1. Opens the character device.
-2. Reads the `jiffies` value twice, with a sleep interval of one second between the readings.
-3. Computes and prints the difference between the two `jiffies` readings.
-
-## Compilation and Execution
-
-**Kernel Space:**
-
-To compile the kernel module:
-
-```bash
-$ make
-```
-
-Load the module:
-
-```bash
-$ sudo insmod <module_name>.ko
-```
-
-Check for any printed messages:
-
-```bash
-$ dmesg
-```
-
-To remove the module:
-
-```bash
-$ sudo rmmod <module_name>
-```
-
-**User Space:**
-
-Compile:
-
-```bash
-$ gcc user_program.c -o user_program
-```
-
-Run:
-
-```bash
-$ ./user_program
-```
-
-## Details
-
-### jiffies
-
-Informally, a "jiffy" is a term for any short period of time. In the Linux kernel, `jiffies` represents the number of clock ticks since system boot. It's a global variable provided by the kernel and is used frequently for timing operations.
-
-### Character Device
-
-Character devices are one of the ways to interface with the kernel. They are simple to write and can be accessed as regular files. In this project, the character device `/dev/jiffies` is created, and it supports basic file operations like open, read, write, and close.
-
-When a user reads from this device, the value of `jiffies` is returned. When written to, the device doesn't perform any specific operation.
-
-### Safety and User-Kernel Interactions
-
-The kernel space and user space in Linux are distinct, with the kernel having access to system memory and hardware, while user space interacts with the kernel through system calls.
-
-In this project, `put_user` is used to safely copy the value of `jiffies` from kernel space to user space. This function ensures that the kernel doesn't inadvertently overwrite user space memory.
-
-## Conclusion
-
-This project provides a practical example of kernel module programming and user-kernel interactions in Linux. It emphasizes the creation and use of character devices and safe memory operations between kernel and user spaces.
